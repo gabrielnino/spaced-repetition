@@ -64,8 +64,7 @@ function setPhrase() {
         document.getElementById("memorySection").style.display = "block";
         document.getElementById("myTextbox").disabled = false;
         document.getElementById("myTextbox").focus(); // Focus the textbox
-        const hiddenPhrase = document.getElementById("phraseHiddenDisplay");
-        hiddenPhrase.textContent = phraseInput;
+        checkAndHighlight(); // Initial call to display the phrase
         startWaitTimer();
     } else {
         alert("Please enter a valid phrase.");
@@ -134,6 +133,8 @@ function handleEnterKeyPress(event) {
 
 // Add event listener for keydown to the whole document
 document.addEventListener("keydown", handleEnterKeyPress);
+// Attach the input event listener to the textbox for real-time feedback
+document.getElementById("myTextbox").addEventListener("input", checkAndHighlight);
 
 // Set dark mode as default on page load
 window.onload = function() {
@@ -168,4 +169,30 @@ function setCustomIntervals() {
 // Function to update the display of current intervals
 function updateIntervalDisplay() {
     document.getElementById("currentIntervals").textContent = `Current intervals: ${waitIntervals.join(', ')} seconds`;
+}
+
+function highlightDifferences(input, target) {
+    const inputWords = input.split(' ');
+    const targetWords = target.split(' ');
+
+    let highlightedPhrase = '';
+
+    for (let i = 0; i < Math.max(inputWords.length, targetWords.length); i++) {
+        if (inputWords[i] === targetWords[i]) {
+            highlightedPhrase += `<span style="background-color: green; color: white;">${inputWords[i] || ''}</span> `;
+        } else if (!inputWords[i] && targetWords[i]) {
+            highlightedPhrase += `<span style="background-color: yellow;">______</span> `;
+        } else {
+            highlightedPhrase += `<span style="background-color: red; color: white;">${inputWords[i] || ''}</span> `;
+        }
+    }
+
+    return highlightedPhrase;
+}
+
+function checkAndHighlight() {
+    const textbox = document.getElementById("myTextbox");
+    const inputValue = textbox.value.trim();
+    const highlightedPhrase = highlightDifferences(inputValue, targetPhrase);
+    document.getElementById("phraseHiddenDisplay").innerHTML = highlightedPhrase;
 }
