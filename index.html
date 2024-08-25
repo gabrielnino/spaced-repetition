@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,21 +32,25 @@
                 Tip: Use shorter intervals for more frequent practice sessions, and longer intervals as you get more familiar with the material.
             </div>
         </div>
+        
+        <!-- Phrase-interval section with hidden display -->
         <div id="phrase-intervalSection" class="section">
-            phrase hiden
+            phrase hidden
             <div id="phraseHiddenDisplay" class="phrase-hidden-display">
             </div>
         </div>
+
         <!-- Section to input the phrase -->
         <div id="phraseSection" class="section">
             <h2>Enter the phrase you want to memorize:</h2>
-            <input type="text" id="phraseInput" placeholder="Type the phrase here..." class="input-field">
+            <!-- Changed from input to textarea for multiline support -->
+            <textarea id="phraseInput" placeholder="Type the phrase here..." class="input-field" rows="4"></textarea>
             <button onclick="setPhrase()" class="action-btn">Start</button>
         </div>
 
         <!-- Memorization section -->
         <div id="memorySection" class="section" style="display: none;">
-            <input type="text" id="myTextbox" oninput="checkAndClear()" placeholder="Type the phrase here..." class="input-field">
+            <textarea id="myTextbox" oninput="checkAndClear()" placeholder="Type the phrase here..." class="input-field" rows="4"></textarea>
             <div id="counter" class="info-text">Text cleared 0 times.</div> <!-- Displays the counter -->
             <div id="timer" class="info-text">No wait mode.</div> <!-- Displays the timer -->
         </div>
