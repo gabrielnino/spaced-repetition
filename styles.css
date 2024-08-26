@@ -140,3 +140,17 @@ textarea.input-field {
 #phrase-intervalSection:hover .phrase-hidden-display {
     display: block; /* Show on hover */
 }
+
+.green-highlight {
+    background-color: green;
+    color: white;
+}
+
+.red-highlight {
+    background-color: red;
+    color: white;
+}
+
+.yellow-highlight {
+    background-color: yellow;
+}

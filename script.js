@@ -5,6 +5,9 @@ let currentInterval = 0;
 let targetPhrase = "";
 let mode = "withoutWait"; // Default mode set to without waiting intervals
 
+let clockInterval;
+let elapsedSeconds = 0;
+
 function normalizeString(str) {
     return str
         .normalize("NFD")
@@ -64,6 +67,7 @@ function setPhrase() {
         document.getElementById("memorySection").style.display = "block";
         document.getElementById("myTextbox").disabled = false;
         document.getElementById("myTextbox").focus(); // Focus the textbox
+        resetClock(); // Reset the clock when starting
         checkAndHighlight(); // Initial call to display the phrase
         startWaitTimer();
     } else {
@@ -171,6 +175,22 @@ function updateIntervalDisplay() {
     document.getElementById("currentIntervals").textContent = `Current intervals: ${waitIntervals.join(', ')} seconds`;
 }
 
+function startClock() {
+    clearInterval(clockInterval); // Clear any previous intervals
+    clockInterval = setInterval(() => {
+        elapsedSeconds++;
+        const minutes = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+        const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+        document.getElementById("clock").textContent = `Time: ${minutes}:${seconds}`;
+    }, 1000);
+}
+
+function resetClock() {
+    clearInterval(clockInterval);
+    elapsedSeconds = 0;
+    document.getElementById("clock").textContent = "Time: 00:00";
+}
+
 function highlightDifferences(input, target) {
     const inputWords = input.split(' ');
     const targetWords = target.split(' ');
@@ -195,4 +215,19 @@ function checkAndHighlight() {
     const inputValue = textbox.value.trim();
     const highlightedPhrase = highlightDifferences(inputValue, targetPhrase);
     document.getElementById("phraseHiddenDisplay").innerHTML = highlightedPhrase;
+
+    const normalizedInput = normalizeString(inputValue);
+    const normalizedPhrase = normalizeString(targetPhrase);
+
+    if (normalizedInput === normalizedPhrase) {
+        // If input matches the target phrase, reset the text, counter, and clock
+        textbox.value = "";
+        clearCount++;
+        document.getElementById("counter").textContent = `Text cleared ${clearCount} times.`;
+        resetClock(); // Reset the clock when the phrase is correct
+        startWaitTimer();
+    } else if (elapsedSeconds === 0) {
+        // Start the clock only if it hasn't started already
+        startClock();
+    }
 }
