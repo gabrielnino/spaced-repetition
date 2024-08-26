@@ -23,7 +23,7 @@ h1 {
     font-size: 2em;
     text-align: center;
     margin-bottom: 20px;
-    color: #fff;
+    color: #ccc;
 }
 
 .section {
@@ -33,19 +33,13 @@ h1 {
 .input-field {
     width: 100%;
     max-width: 100%;
+    height: 40px;
     font-size: 1em;
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: vertical; /* Allow users to resize vertically */
-}
-
-/* Specific styling for textarea if needed */
-textarea.input-field {
-    height: auto; /* Allows the height to adjust based on content */
-    line-height: 1.5; /* Improves readability */
 }
 
 .toggle-btn, .action-btn {
@@ -139,18 +133,4 @@ textarea.input-field {
 
 #phrase-intervalSection:hover .phrase-hidden-display {
     display: block; /* Show on hover */
-}
-
-.green-highlight {
-    background-color: green;
-    color: white;
-}
-
-.red-highlight {
-    background-color: red;
-    color: white;
-}
-
-.yellow-highlight {
-    background-color: yellow;
 }
