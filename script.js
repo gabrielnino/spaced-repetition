@@ -231,3 +231,16 @@ function checkAndHighlight() {
         startClock();
     }
 }
+function goToStep(stepNumber) {
+    if (stepNumber === 1) {
+        document.getElementById("step1Content").style.display = "block";
+        document.getElementById("step2Content").style.display = "none";
+        document.getElementById("step1").classList.add("active");
+        document.getElementById("step2").classList.remove("active");
+    } else if (stepNumber === 2) {
+        document.getElementById("step1Content").style.display = "none";
+        document.getElementById("step2Content").style.display = "block";
+        document.getElementById("step1").classList.remove("active");
+        document.getElementById("step2").classList.add("active");
+    }
+}
