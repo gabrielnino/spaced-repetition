@@ -300,6 +300,7 @@ async function generateDistractors(correctWord) {
 function showMemoryOptions(options) {
     const optionsContainer = document.getElementById("memoryOptions");
     optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
+    optionsContainer.style.display = 'none';
 
     options.sort(() => Math.random() - 0.5); // Mezclar opciones
     options.forEach(option => {
