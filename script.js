@@ -140,6 +140,9 @@ document.addEventListener("keydown", handleEnterKeyPress);
 // Attach the input event listener to the textbox for real-time feedback
 document.getElementById("myTextbox").addEventListener("input", checkAndHighlight);
 
+// Attach the input event listener to the textbox for  suggest word for memory.
+document.getElementById("myTextbox").addEventListener("input", suggestNextWordForMemory);
+
 // Set dark mode as default on page load
 window.onload = function() {
     document.body.classList.add("dark-mode");
@@ -242,5 +245,87 @@ function goToStep(stepNumber) {
         document.getElementById("step2Content").style.display = "block";
         document.getElementById("step1").classList.remove("active");
         document.getElementById("step2").classList.add("active");
+    }
+}
+function normalizeString(str) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/['’]/g, "")
+        .toLowerCase();
+}
+
+function suggestNextWordForMemory() {
+    const inputValue = normalizeString(document.getElementById("myTextbox").value.trim());
+    const words = targetPhrase.split(' ');
+    const inputWords = inputValue.split(' ');
+
+    let currentIndex = 0;
+    while (currentIndex < inputWords.length && inputWords[currentIndex] === normalizeString(words[currentIndex])) {
+        currentIndex++;
+    }
+    const remainingWords = words;
+    if(words > 0){
+        remainingWords = words.slice(currentIndex);
+    }
+     
+    if (remainingWords.length > 0) {
+        const correctWord = words[currentIndex];
+        const distractors = generateDistractors(correctWord);
+        showMemoryOptions([correctWord, ...distractors]);
+    }
+}
+
+function generateDistractors(correctWord) {
+    // Generar una lista de distractores asegurando que no sean iguales a la palabra correcta
+    const potentialWords = ['example', 'practice', 'study', 'learn', 'memory', 'test']; // Puedes personalizar estas palabras
+    return potentialWords.filter(word => word !== correctWord).slice(0, 4);
+}
+
+function showMemoryOptions(options) {
+    const optionsContainer = document.getElementById("memoryOptions");
+    optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
+
+    options.sort(() => Math.random() - 0.5); // Mezclar opciones
+    options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.onclick = () => handleOptionSelection(option);
+        optionsContainer.appendChild(button);
+    });
+}
+
+function handleOptionSelection(selectedWord) {
+    const textbox = document.getElementById("myTextbox");
+    const inputWords = textbox.value.trim().split(' ');
+    let index = inputWords.length;
+    if (textbox.value === "") {
+        index = 0;
+    }
+    const expectedWord = targetPhrase.split(' ')[index];
+    console.log("Selected word:", selectedWord);
+    console.log("Expected word:", expectedWord);
+    console.log("Target phrase:", targetPhrase);
+    if (selectedWord === expectedWord) {
+        textbox.value += selectedWord + ' ';
+        suggestNextWordForMemory();
+        checkAndHighlight(); // Continua con la siguiente palabra
+    } else {
+        alert("Incorrect word, try again."); // Mensaje de error para palabras incorrectas
+    }
+}
+
+function setPhrase() {
+    const phraseInput = document.getElementById("phraseInput").value.trim();
+    if (phraseInput !== "") {
+        targetPhrase = phraseInput;
+        document.getElementById("phraseSection").style.display = "none";
+        document.getElementById("memorySection").style.display = "block";
+        document.getElementById("myTextbox").disabled = false;
+        document.getElementById("myTextbox").focus(); // Focus the textbox
+        suggestNextWordForMemory(); // Initial call to display the options
+    } else {
+        alert("Please enter a valid phrase.");
+        document.getElementById("phraseInput").focus(); // Focus the phrase input textbox
     }
 }
