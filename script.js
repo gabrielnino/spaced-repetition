@@ -53,6 +53,8 @@ function checkAndClear() {
         textbox.value = "";
         clearCount++;
         document.getElementById("counter").textContent = `Text cleared ${clearCount} times.`;
+        suggestNextWordForMemory();
+        checkAndHighlight();
         startWaitTimer();
     } else {
         textbox.focus(); // Focus the textbox
@@ -255,7 +257,7 @@ function normalizeString(str) {
         .toLowerCase();
 }
 
-function suggestNextWordForMemory() {
+async function suggestNextWordForMemory() {
     const inputValue = normalizeString(document.getElementById("myTextbox").value.trim());
     const words = targetPhrase.split(' ');
     const inputWords = inputValue.split(' ');
@@ -264,23 +266,36 @@ function suggestNextWordForMemory() {
     while (currentIndex < inputWords.length && inputWords[currentIndex] === normalizeString(words[currentIndex])) {
         currentIndex++;
     }
-    const remainingWords = words;
-    if(words > 0){
-        remainingWords = words.slice(currentIndex);
-    }
-     
-    if (remainingWords.length > 0) {
+
+    if (currentIndex < words.length) {
         const correctWord = words[currentIndex];
-        const distractors = generateDistractors(correctWord);
+        const distractors = await generateDistractors(correctWord);
         showMemoryOptions([correctWord, ...distractors]);
     }
 }
 
-function generateDistractors(correctWord) {
-    // Generar una lista de distractores asegurando que no sean iguales a la palabra correcta
-    const potentialWords = ['example', 'practice', 'study', 'learn', 'memory', 'test']; // Puedes personalizar estas palabras
-    return potentialWords.filter(word => word !== correctWord).slice(0, 4);
+
+async function generateDistractors(correctWord) {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${correctWord}`);
+    const data = await response.json();
+    
+    let distractors = [];
+    
+    if (data && data[0] && data[0].meanings) {
+        data[0].meanings.forEach(meaning => {
+            if (meaning.synonyms) {
+                distractors = distractors.concat(meaning.synonyms);
+            }
+        });
+    }
+
+    // Ensure distractors are unique and do not contain the correct word
+    distractors = distractors.filter(word => word !== correctWord);
+    
+    // Shuffle and return up to 4 distractors
+    return distractors.sort(() => 0.5 - Math.random()).slice(0, 4);
 }
+
 
 function showMemoryOptions(options) {
     const optionsContainer = document.getElementById("memoryOptions");
