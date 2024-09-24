@@ -184,3 +184,19 @@ h2 {
 .memory-options button:hover {
     background-color: #ddd;
 }
+
+.phrase-hidden-display {
+    display: none; /* Initially hide the element */
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e7f3fe;
+    border-left: 4px solid #007bff;
+    color: #333;
+    font-size: 0.9em;
+    border-radius: 4px;
+}
+
+/* Hover to show */
+#phrase-intervalSection:hover .phrase-hidden-display {
+    display: block;
+}

@@ -146,6 +146,20 @@ function highlightDifferences(input, target) {
     return highlightedPhrase;
 }
 
+// Toggle the visibility of the phraseHiddenDisplay based on the checkbox
+function togglePhraseVisibility() {
+    const checkbox = document.getElementById("showPhraseCheckbox");
+    const phraseHiddenDisplay = document.getElementById("phraseHiddenDisplay");
+
+    if (checkbox.checked) {
+        // Show the phraseHiddenDisplay when the checkbox is checked
+        phraseHiddenDisplay.style.display = "block";
+    } else {
+        // Return to the default behavior when unchecked
+        phraseHiddenDisplay.style.display = "none";
+    }
+}
+
 // Update the display with highlighted phrase differences
 function checkAndHighlight() {
     const textbox = document.getElementById("myTextbox");
@@ -165,6 +179,8 @@ function checkAndHighlight() {
     } else if (elapsedSeconds === 0) {
         startClock();
     }
+
+    togglePhraseVisibility();
 }
 
 // Toggle dark mode
