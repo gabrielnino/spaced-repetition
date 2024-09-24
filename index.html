@@ -4,42 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spaced Repetition Memory Technique</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css"> <!-- External CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet"> <!-- Google Font -->
 </head>
 <body>
     <div class="container">
         <h1>Spaced Repetition Memory Technique</h1>
+        
         <!-- Reset Button -->
         <button id="resetButton" class="action-btn" onclick="reset()">Reset</button>
-        <!-- Step 2: Memorization -->
-        <div id="step2Content" class="step-content" style="display: block;">
+        
+        <!-- Memorization Section -->
+        <div id="step2Content" class="step-content">
             <!-- Phrase-interval section with hidden display -->
             <div id="phrase-intervalSection" class="section">
                 <h2>Check Your Progress:</h2>
                 <div id="phraseHiddenDisplay" class="phrase-hidden-display"></div>
             </div>
+
             <!-- Section to input the phrase -->
             <div id="phraseSection" class="section">
                 <h2>Enter the phrase you want to memorize:</h2>
-                <!-- Changed from input to textarea for multiline support -->
                 <textarea id="phraseInput" placeholder="Type the phrase here..." class="input-field" rows="4"></textarea>
                 <button onclick="setPhrase()" class="action-btn">Start</button>
             </div>
+
             <!-- Memorization section -->
             <div id="memorySection" class="section" style="display: none;">
                 <div id="clock" class="info-text">Time: 00:00</div> <!-- Clock display -->
                 <textarea id="myTextbox" oninput="checkAndHighlight()" placeholder="Type the phrase here..." class="input-field" rows="8"></textarea>
-                <div id="memoryOptions" class="memory-options"></div> <!-- Container for options -->
-                <div id="counter" class="info-text">Text cleared 0 times.</div> <!-- Displays the counter -->
-                <div id="timer" class="info-text">No wait mode.</div> <!-- Displays the timer -->
+                <div id="memoryOptions" class="memory-options"></div> <!-- Memory options container -->
+                <div id="counter" class="info-text">Text cleared 0 times.</div> <!-- Clear counter -->
+                <div id="timer" class="info-text">No wait mode.</div> <!-- Timer display -->
             </div>
-            <!-- Overlay that blocks typing -->
-            <div id="overlay">Waiting...</div> <!-- Displays the waiting message -->
+
+            <!-- Overlay that blocks typing during the wait mode -->
+            <div id="overlay" style="display: none;">Waiting...</div> <!-- Waiting message -->
         </div>
     </div>
 
-    <!-- Link to external JavaScript file -->
+    <!-- External JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
