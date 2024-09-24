@@ -3,11 +3,11 @@ let timerInterval;
 let waitIntervals = [60, 300, 900, 3600];
 let currentInterval = 0;
 let targetPhrase = "";
-let mode = "withoutWait"; // Default mode set to without waiting intervals
-
+let mode = "withoutWait"; // Default mode
 let clockInterval;
 let elapsedSeconds = 0;
 
+// Normalize string by removing accents, punctuation, and converting to lowercase
 function normalizeString(str) {
     return str
         .normalize("NFD")
@@ -16,11 +16,11 @@ function normalizeString(str) {
         .toLowerCase();
 }
 
+// Start the waiting timer
 function startWaitTimer() {
     if (mode === "withoutWait") {
-        // If mode is without wait, do not start the timer
         document.getElementById("timer").textContent = "No wait mode.";
-        document.getElementById("myTextbox").focus(); // Focus the textbox
+        document.getElementById("myTextbox").focus();
         return;
     }
 
@@ -38,12 +38,13 @@ function startWaitTimer() {
             clearInterval(timerInterval);
             document.getElementById("myTextbox").disabled = false;
             document.getElementById("overlay").style.display = "none";
-            document.getElementById("myTextbox").focus(); // Focus the textbox
+            document.getElementById("myTextbox").focus();
             currentInterval = (currentInterval + 1) % waitIntervals.length;
         }
     }, 1000);
 }
 
+// Check and clear the input if it matches the target phrase
 function checkAndClear() {
     const textbox = document.getElementById("myTextbox");
     const inputValue = normalizeString(textbox.value.trim());
@@ -53,14 +54,14 @@ function checkAndClear() {
         textbox.value = "";
         clearCount++;
         document.getElementById("counter").textContent = `Text cleared ${clearCount} times.`;
-        suggestNextWordForMemory();
         checkAndHighlight();
         startWaitTimer();
     } else {
-        textbox.focus(); // Focus the textbox
+        textbox.focus();
     }
 }
 
+// Set the phrase to memorize
 function setPhrase() {
     const phraseInput = document.getElementById("phraseInput").value.trim();
     if (phraseInput !== "") {
@@ -68,49 +69,22 @@ function setPhrase() {
         document.getElementById("phraseSection").style.display = "none";
         document.getElementById("memorySection").style.display = "block";
         document.getElementById("myTextbox").disabled = false;
-        document.getElementById("myTextbox").focus(); // Focus the textbox
-        resetClock(); // Reset the clock when starting
-        checkAndHighlight(); // Initial call to display the phrase
+        document.getElementById("myTextbox").focus();
+        resetClock();
+        checkAndHighlight();
         startWaitTimer();
     } else {
         alert("Please enter a valid phrase.");
-        document.getElementById("phraseInput").focus(); // Focus the phrase input textbox
+        document.getElementById("phraseInput").focus();
     }
 }
 
-function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-    // Update the toggle button text based on the current mode
-    const darkModeToggle = document.getElementById("darkModeToggle");
-    if (document.body.classList.contains("dark-mode")) {
-        darkModeToggle.textContent = "Switch to Light Mode";
-    } else {
-        darkModeToggle.textContent = "Switch to Dark Mode";
-    }
-}
-
-function toggleMode() {
-    const modeToggle = document.getElementById("modeToggle");
-    if (mode === "withWait") {
-        mode = "withoutWait";
-        modeToggle.textContent = "Switch to Wait Mode";
-        document.getElementById("timer").textContent = "No wait mode.";
-        clearInterval(timerInterval); // Stop any ongoing timer
-        document.getElementById("myTextbox").disabled = false;
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("myTextbox").focus(); // Focus the textbox
-    } else {
-        mode = "withWait";
-        modeToggle.textContent = "Switch to No Wait Mode";
-        startWaitTimer();
-    }
-}
-
+// Reset the entire process
 function reset() {
     clearCount = 0;
     currentInterval = 0;
     targetPhrase = "";
-    mode = "withoutWait"; // Reset to default no wait mode
+    mode = "withoutWait";
     clearInterval(timerInterval);
 
     document.getElementById("phraseInput").value = "";
@@ -120,8 +94,7 @@ function reset() {
     document.getElementById("phraseSection").style.display = "block";
     document.getElementById("memorySection").style.display = "none";
     document.getElementById("overlay").style.display = "none";
-    document.getElementById("modeToggle").textContent = "Switch to Wait Mode";
-    document.getElementById("phraseInput").focus(); // Focus the phrase input textbox
+    document.getElementById("phraseInput").focus();
 }
 
 // Function to handle the Enter key press event
@@ -137,51 +110,9 @@ function handleEnterKeyPress(event) {
     }
 }
 
-// Add event listener for keydown to the whole document
-document.addEventListener("keydown", handleEnterKeyPress);
-// Attach the input event listener to the textbox for real-time feedback
-document.getElementById("myTextbox").addEventListener("input", checkAndHighlight);
-
-// Attach the input event listener to the textbox for  suggest word for memory.
-document.getElementById("myTextbox").addEventListener("input", suggestNextWordForMemory);
-
-// Set dark mode as default on page load
-window.onload = function() {
-    document.body.classList.add("dark-mode");
-    document.getElementById("darkModeToggle").textContent = "Switch to Light Mode";
-    // Set mode toggle button to reflect default "No Wait" mode
-    document.getElementById("modeToggle").textContent = "Switch to Wait Mode";
-    document.getElementById("timer").textContent = "No wait mode.";
-    document.getElementById("phraseInput").focus(); // Focus the phrase input textbox on load
-    updateIntervalDisplay(); // Display the initial intervals
-}
-
-// Function to set custom wait intervals
-function setCustomIntervals() {
-    const intervalInput = document.getElementById("intervalInput").value.trim();
-    if (intervalInput !== "") {
-        const newIntervals = intervalInput.split(',').map(val => parseInt(val.trim())).filter(val => !isNaN(val) && val > 0);
-        if (newIntervals.length > 0) {
-            waitIntervals = newIntervals;
-            currentInterval = 0; // Reset the current interval index
-            updateIntervalDisplay(); // Update the interval display
-            alert(`Custom intervals set to: ${waitIntervals.join(', ')} seconds.`);
-            document.getElementById("phraseInput").focus(); // Focus the phrase input textbox
-        } else {
-            alert("Please enter valid intervals separated by commas.");
-        }
-    } else {
-        alert("Please enter valid intervals.");
-    }
-}
-
-// Function to update the display of current intervals
-function updateIntervalDisplay() {
-    document.getElementById("currentIntervals").textContent = `Current intervals: ${waitIntervals.join(', ')} seconds`;
-}
-
+// Clock-related functions
 function startClock() {
-    clearInterval(clockInterval); // Clear any previous intervals
+    clearInterval(clockInterval);
     clockInterval = setInterval(() => {
         elapsedSeconds++;
         const minutes = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
@@ -196,10 +127,10 @@ function resetClock() {
     document.getElementById("clock").textContent = "Time: 00:00";
 }
 
+// Highlight the differences between input and target phrase
 function highlightDifferences(input, target) {
     const inputWords = input.split(' ');
     const targetWords = target.split(' ');
-
     let highlightedPhrase = '';
 
     for (let i = 0; i < Math.max(inputWords.length, targetWords.length); i++) {
@@ -215,6 +146,7 @@ function highlightDifferences(input, target) {
     return highlightedPhrase;
 }
 
+// Update the display with highlighted phrase differences
 function checkAndHighlight() {
     const textbox = document.getElementById("myTextbox");
     const inputValue = textbox.value.trim();
@@ -225,123 +157,33 @@ function checkAndHighlight() {
     const normalizedPhrase = normalizeString(targetPhrase);
 
     if (normalizedInput === normalizedPhrase) {
-        // If input matches the target phrase, reset the text, counter, and clock
         textbox.value = "";
         clearCount++;
         document.getElementById("counter").textContent = `Text cleared ${clearCount} times.`;
-        resetClock(); // Reset the clock when the phrase is correct
+        resetClock();
         startWaitTimer();
     } else if (elapsedSeconds === 0) {
-        // Start the clock only if it hasn't started already
         startClock();
     }
 }
-function goToStep(stepNumber) {
-    if (stepNumber === 1) {
-        document.getElementById("step1Content").style.display = "block";
-        document.getElementById("step2Content").style.display = "none";
-        document.getElementById("step1").classList.add("active");
-        document.getElementById("step2").classList.remove("active");
-    } else if (stepNumber === 2) {
-        document.getElementById("step1Content").style.display = "none";
-        document.getElementById("step2Content").style.display = "block";
-        document.getElementById("step1").classList.remove("active");
-        document.getElementById("step2").classList.add("active");
-    }
-}
-function normalizeString(str) {
-    return str
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/['’]/g, "")
-        .toLowerCase();
-}
 
-async function suggestNextWordForMemory() {
-    const inputValue = normalizeString(document.getElementById("myTextbox").value.trim());
-    const words = targetPhrase.split(' ');
-    const inputWords = inputValue.split(' ');
-
-    let currentIndex = 0;
-    while (currentIndex < inputWords.length && inputWords[currentIndex] === normalizeString(words[currentIndex])) {
-        currentIndex++;
-    }
-
-    if (currentIndex < words.length) {
-        const correctWord = words[currentIndex];
-        const distractors = await generateDistractors(correctWord);
-        showMemoryOptions([correctWord, ...distractors]);
-    }
-}
-
-
-async function generateDistractors(correctWord) {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${correctWord}`);
-    const data = await response.json();
-    
-    let distractors = [];
-    
-    if (data && data[0] && data[0].meanings) {
-        data[0].meanings.forEach(meaning => {
-            if (meaning.synonyms) {
-                distractors = distractors.concat(meaning.synonyms);
-            }
-        });
-    }
-
-    // Ensure distractors are unique and do not contain the correct word
-    distractors = distractors.filter(word => word !== correctWord);
-    
-    // Shuffle and return up to 4 distractors
-    return distractors.sort(() => 0.5 - Math.random()).slice(0, 4);
-}
-
-
-function showMemoryOptions(options) {
-    const optionsContainer = document.getElementById("memoryOptions");
-    optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
-    optionsContainer.style.display = 'none';
-
-    options.sort(() => Math.random() - 0.5); // Mezclar opciones
-    options.forEach(option => {
-        const button = document.createElement('button');
-        button.textContent = option;
-        button.onclick = () => handleOptionSelection(option);
-        optionsContainer.appendChild(button);
-    });
-}
-
-function handleOptionSelection(selectedWord) {
-    const textbox = document.getElementById("myTextbox");
-    const inputWords = textbox.value.trim().split(' ');
-    let index = inputWords.length;
-    if (textbox.value === "") {
-        index = 0;
-    }
-    const expectedWord = targetPhrase.split(' ')[index];
-    console.log("Selected word:", selectedWord);
-    console.log("Expected word:", expectedWord);
-    console.log("Target phrase:", targetPhrase);
-    if (selectedWord === expectedWord) {
-        textbox.value += selectedWord + ' ';
-        suggestNextWordForMemory();
-        checkAndHighlight(); // Continua con la siguiente palabra
+// Toggle dark mode
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    if (document.body.classList.contains("dark-mode")) {
+        darkModeToggle.textContent = "Switch to Light Mode";
     } else {
-        alert("Incorrect word, try again."); // Mensaje de error para palabras incorrectas
+        darkModeToggle.textContent = "Switch to Dark Mode";
     }
 }
 
-function setPhrase() {
-    const phraseInput = document.getElementById("phraseInput").value.trim();
-    if (phraseInput !== "") {
-        targetPhrase = phraseInput;
-        document.getElementById("phraseSection").style.display = "none";
-        document.getElementById("memorySection").style.display = "block";
-        document.getElementById("myTextbox").disabled = false;
-        document.getElementById("myTextbox").focus(); // Focus the textbox
-        suggestNextWordForMemory(); // Initial call to display the options
-    } else {
-        alert("Please enter a valid phrase.");
-        document.getElementById("phraseInput").focus(); // Focus the phrase input textbox
-    }
-}
+// Event listeners
+document.addEventListener("keydown", handleEnterKeyPress);
+
+// On page load
+window.onload = function() {
+    document.getElementById("phraseInput").focus();
+    document.body.classList.add("dark-mode"); // Dark mode as default
+    document.getElementById("darkModeToggle").textContent = "Switch to Light Mode";
+};
